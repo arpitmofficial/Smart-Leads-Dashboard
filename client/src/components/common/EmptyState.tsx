@@ -2,8 +2,8 @@ import React from 'react';
 import { InboxIcon } from 'lucide-react';
 
 interface EmptyStateProps {
-  title?: string;
-  message?: string;
+  title?: React.ReactNode;
+  message?: React.ReactNode;
   icon?: React.ReactNode;
   action?: React.ReactNode;
 }
@@ -22,9 +22,9 @@ const EmptyState: React.FC<EmptyStateProps> = ({
       <h3 className="text-lg font-semibold text-surface-700 dark:text-surface-300 mb-1">
         {title}
       </h3>
-      <p className="text-sm text-surface-500 dark:text-surface-400 text-center max-w-sm">
+      <div className="text-sm text-surface-500 dark:text-surface-400 text-center max-w-sm">
         {message}
-      </p>
+      </div>
       {action && <div className="mt-4">{action}</div>}
     </div>
   );

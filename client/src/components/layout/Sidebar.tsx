@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -11,11 +11,34 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { UserRole } from '../../types';
+import { leadApi } from '../../api/leadApi';
 
 const Sidebar: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [leadCount, setLeadCount] = useState<number | null>(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadStats = async () => {
+      try {
+        const response = await leadApi.getStats();
+        if (response.success && response.data && isMounted) {
+          setLeadCount(response.data.total);
+        }
+      } catch {
+        if (isMounted) {
+          setLeadCount(null);
+        }
+      }
+    };
+
+    loadStats();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -60,7 +83,16 @@ const Sidebar: React.FC = () => {
             }
           >
             <Icon className="w-5 h-5 flex-shrink-0" />
-            {!collapsed && <span>{label}</span>}
+            {!collapsed && (
+              <span className="flex-1 flex items-center justify-between">
+                <span>{label}</span>
+                {label === 'Leads' && leadCount !== null && (
+                  <span className="ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-primary-50 text-primary-700 dark:bg-primary-500/10 dark:text-primary-300">
+                    {leadCount}
+                  </span>
+                )}
+              </span>
+            )}
           </NavLink>
         ))}
       </nav>

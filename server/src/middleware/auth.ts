@@ -3,12 +3,13 @@ import jwt from 'jsonwebtoken';
 import { env } from '../config/env';
 import { AuthRequest, JwtPayload } from '../interfaces';
 import { ApiError } from '../utils/ApiError';
+import { User } from '../models/User';
 
-export const authenticate = (
+export const authenticate = async (
   req: AuthRequest,
   _res: Response,
   next: NextFunction
-): void => {
+): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -23,12 +24,17 @@ export const authenticate = (
     }
 
     const decoded = jwt.verify(token, env.JWT_SECRET) as JwtPayload;
+    const user = await User.findById(decoded.id).select('name email role');
+
+    if (!user) {
+      throw ApiError.unauthorized('User no longer exists');
+    }
 
     req.user = {
-      id: decoded.id,
-      email: decoded.email,
-      role: decoded.role,
-      name: decoded.name,
+      id: user._id.toString(),
+      email: user.email,
+      role: user.role,
+      name: user.name,
     };
 
     next();

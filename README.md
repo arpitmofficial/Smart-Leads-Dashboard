@@ -190,6 +190,15 @@ docker-compose down -v
 
 ---
 
+## 🧪 Testing
+
+```bash
+# Backend API tests
+cd server && npm run test
+```
+
+---
+
 ## 📡 API Documentation
 
 ### Base URL
@@ -222,7 +231,7 @@ http://localhost:5000/api
 | Parameter | Type | Description |
 |-----------|------|-------------|
 | `page` | number | Page number (default: 1) |
-| `limit` | number | Records per page (default: 10) |
+| `limit` | number | Records per page (fixed: 10) |
 | `status` | string | Filter by status (New, Contacted, Qualified, Lost) |
 | `source` | string | Filter by source (Website, Instagram, Referral) |
 | `search` | string | Search by name or email |

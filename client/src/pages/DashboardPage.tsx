@@ -72,9 +72,25 @@ const DashboardPage: React.FC = () => {
   ];
 
   const sourceCards = [
-    { label: 'Website', value: stats.bySource.website, icon: Globe, color: 'text-purple-500', bg: 'bg-purple-50 dark:bg-purple-500/10' },
-    { label: 'Instagram', value: stats.bySource.instagram, icon: Camera, color: 'text-pink-500', bg: 'bg-pink-50 dark:bg-pink-500/10' },
-    { label: 'Referral', value: stats.bySource.referral, icon: Share2, color: 'text-teal-500', bg: 'bg-teal-50 dark:bg-teal-500/10' },
+    { label: 'Website', value: stats.bySource.website, icon: Globe, color: 'text-sky-500', bg: 'bg-sky-50 dark:bg-sky-500/10' },
+    { label: 'Instagram', value: stats.bySource.instagram, icon: Camera, color: 'text-rose-500', bg: 'bg-rose-50 dark:bg-rose-500/10' },
+    { label: 'Referral', value: stats.bySource.referral, icon: Share2, color: 'text-amber-500', bg: 'bg-amber-50 dark:bg-amber-500/10' },
+  ];
+
+  const conversionRate = stats.total > 0
+    ? Math.round((stats.byStatus.qualified / stats.total) * 100)
+    : 0;
+  const engagementRate = stats.total > 0
+    ? Math.round(((stats.byStatus.contacted + stats.byStatus.qualified) / stats.total) * 100)
+    : 0;
+  const lossRate = stats.total > 0
+    ? Math.round((stats.byStatus.lost / stats.total) * 100)
+    : 0;
+
+  const insightCards = [
+    { label: 'Conversion Rate', value: conversionRate, tone: 'bg-emerald-500' },
+    { label: 'Engagement Rate', value: engagementRate, tone: 'bg-blue-500' },
+    { label: 'Loss Rate', value: lossRate, tone: 'bg-amber-500' },
   ];
 
   return (
@@ -132,12 +148,12 @@ const DashboardPage: React.FC = () => {
                   <span className="text-sm font-medium text-surface-700 dark:text-surface-300">{src.label}</span>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="w-24 h-2 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
+                    <div className="w-24 h-2 rounded-full bg-surface-100 dark:bg-surface-800 overflow-hidden">
                     <div
                       className={`h-full rounded-full bg-gradient-to-r ${
-                        src.label === 'Website' ? 'from-purple-400 to-purple-500' :
-                        src.label === 'Instagram' ? 'from-pink-400 to-pink-500' :
-                        'from-teal-400 to-teal-500'
+                        src.label === 'Website' ? 'from-sky-400 to-sky-500' :
+                        src.label === 'Instagram' ? 'from-rose-400 to-rose-500' :
+                        'from-amber-400 to-amber-500'
                       } transition-all duration-700`}
                       style={{ width: stats.total > 0 ? `${(src.value / stats.total) * 100}%` : '0%' }}
                     />
@@ -214,6 +230,44 @@ const DashboardPage: React.FC = () => {
               ))}
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Smart insights */}
+      <div className="mt-6 bg-white dark:bg-surface-900 rounded-2xl border border-surface-200 dark:border-surface-700 p-6 animate-fade-in" style={{ animationDelay: '560ms' }}>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h3 className="text-lg font-semibold text-surface-900 dark:text-white">
+              Smart Insights
+            </h3>
+            <p className="text-sm text-surface-500 dark:text-surface-400 mt-0.5">
+              Snapshot of lead momentum and conversion health.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {insightCards.map((insight) => (
+            <div
+              key={insight.label}
+              className="p-4 rounded-2xl bg-surface-50 dark:bg-surface-800/50 border border-surface-200/60 dark:border-surface-700/60"
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-surface-600 dark:text-surface-400">
+                  {insight.label}
+                </p>
+                <span className="text-lg font-bold text-surface-900 dark:text-white">
+                  {insight.value}%
+                </span>
+              </div>
+              <div className="mt-3 h-2 rounded-full bg-surface-200 dark:bg-surface-700 overflow-hidden">
+                <div
+                  className={`h-full ${insight.tone} transition-all duration-700`}
+                  style={{ width: `${insight.value}%` }}
+                />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

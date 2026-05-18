@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
+import path from 'path';
 
-dotenv.config();
+// Ensure .env is loaded from the server root regardless of working directory
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 interface EnvConfig {
   PORT: number;
@@ -27,3 +29,10 @@ export const env: EnvConfig = {
   NODE_ENV: getEnvVar('NODE_ENV', 'development'),
   CLIENT_URL: getEnvVar('CLIENT_URL', 'http://localhost:5173'),
 };
+
+if (
+  env.NODE_ENV === 'production' &&
+  env.JWT_SECRET === 'your-super-secret-jwt-key-change-in-production'
+) {
+  throw new Error('JWT_SECRET must be set to a secure value in production');
+}

@@ -5,7 +5,8 @@ import { ApiError } from '../utils/ApiError';
 export const validate = (schema: ZodSchema) => {
   return (req: Request, _res: Response, next: NextFunction): void => {
     try {
-      schema.parse(req.body);
+      // Parse and assign back so transforms (trim, toLowerCase) take effect
+      req.body = schema.parse(req.body);
       next();
     } catch (error) {
       if (error instanceof ZodError) {

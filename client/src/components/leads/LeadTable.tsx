@@ -9,6 +9,7 @@ interface LeadTableProps {
   onEdit: (lead: Lead) => void;
   onDelete: (lead: Lead) => void;
   isLoading?: boolean;
+  highlight?: string;
 }
 
 const SkeletonRow: React.FC = () => (
@@ -21,7 +22,40 @@ const SkeletonRow: React.FC = () => (
   </tr>
 );
 
-const LeadTable: React.FC<LeadTableProps> = ({ leads, onView, onEdit, onDelete, isLoading }) => {
+const escapeRegExp = (value: string): string =>
+  value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const highlightText = (text: string, query?: string): React.ReactNode => {
+  const trimmed = query?.trim();
+  if (!trimmed) return text;
+
+  const regex = new RegExp(`(${escapeRegExp(trimmed)})`, 'ig');
+  const parts = text.split(regex);
+
+  return parts.map((part, index) => {
+    if (part.toLowerCase() === trimmed.toLowerCase()) {
+      return (
+        <mark
+          key={`${part}-${index}`}
+          className="bg-primary-100 text-primary-700 dark:bg-primary-500/20 dark:text-primary-200 rounded px-1"
+        >
+          {part}
+        </mark>
+      );
+    }
+
+    return <span key={`${part}-${index}`}>{part}</span>;
+  });
+};
+
+const LeadTable: React.FC<LeadTableProps> = ({
+  leads,
+  onView,
+  onEdit,
+  onDelete,
+  isLoading,
+  highlight,
+}) => {
   if (isLoading) {
     return (
       <div className="overflow-x-auto rounded-xl border border-surface-200 dark:border-surface-700">
@@ -83,13 +117,13 @@ const LeadTable: React.FC<LeadTableProps> = ({ leads, onView, onEdit, onDelete, 
                     </span>
                   </div>
                   <span className="text-sm font-medium text-surface-900 dark:text-surface-100 truncate max-w-[150px]">
-                    {lead.name}
+                    {highlightText(lead.name, highlight)}
                   </span>
                 </div>
               </td>
               <td className="px-4 py-3.5">
                 <span className="text-sm text-surface-600 dark:text-surface-400 truncate max-w-[180px] block">
-                  {lead.email}
+                  {highlightText(lead.email, highlight)}
                 </span>
               </td>
               <td className="px-4 py-3.5">

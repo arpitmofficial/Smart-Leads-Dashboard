@@ -73,6 +73,18 @@ const LeadsPage: React.FC = () => {
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
+  const clearFilters = () => {
+    setFilters((prev) => ({
+      ...prev,
+      page: 1,
+      status: '',
+      source: '',
+      search: '',
+      sortBy: 'latest',
+    }));
+    setSearchValue('');
+  };
+
   const handlePageChange = (page: number) => {
     setFilters((prev) => ({ ...prev, page }));
   };
@@ -96,13 +108,32 @@ const LeadsPage: React.FC = () => {
   const handleUpdate = async (data: CreateLeadData | UpdateLeadData) => {
     if (!selectedLead) return;
     setIsSubmitting(true);
+    const previousLead = leads.find((lead) => lead._id === selectedLead._id);
+    setLeads((prev) =>
+      prev.map((lead) =>
+        lead._id === selectedLead._id ? { ...lead, ...data } : lead
+      )
+    );
     try {
-      await leadApi.updateLead(selectedLead._id, data as UpdateLeadData);
+      const response = await leadApi.updateLead(selectedLead._id, data as UpdateLeadData);
+      if (response.success && response.data) {
+        setLeads((prev) =>
+          prev.map((lead) =>
+            lead._id === selectedLead._id ? response.data! : lead
+          )
+        );
+      }
       toast.success('Lead updated successfully!');
       setShowEditModal(false);
       setSelectedLead(null);
-      fetchLeads();
     } catch (error: unknown) {
+      if (previousLead) {
+        setLeads((prev) =>
+          prev.map((lead) =>
+            lead._id === previousLead._id ? previousLead : lead
+          )
+        );
+      }
       const err = error as { response?: { data?: { message?: string } } };
       toast.error(err.response?.data?.message || 'Failed to update lead');
     } finally {
@@ -202,18 +233,46 @@ const LeadsPage: React.FC = () => {
       </div>
 
       {/* Content */}
-      {error ? (
+        {error ? (
         <ErrorState message={error} onRetry={fetchLeads} />
       ) : !isLoading && leads.length === 0 ? (
         <EmptyState
           title="No leads found"
-          message={
-            filters.search || filters.status || filters.source
-              ? 'Try adjusting your filters or search query.'
-              : 'Get started by adding your first lead.'
-          }
+            message={
+              filters.search || filters.status || filters.source ? (
+                <div className="space-y-3">
+                  <p>Try adjusting your filters or search query.</p>
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    {filters.status && (
+                      <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300">
+                        {filters.status}
+                      </span>
+                    )}
+                    {filters.source && (
+                      <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300">
+                        {filters.source}
+                      </span>
+                    )}
+                    {filters.search && (
+                      <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-surface-100 dark:bg-surface-800 text-surface-600 dark:text-surface-300">
+                        "{filters.search}"
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                'Get started by adding your first lead.'
+              )
+            }
           action={
-            !filters.search && !filters.status && !filters.source ? (
+              filters.search || filters.status || filters.source ? (
+                <button
+                  onClick={clearFilters}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-md shadow-primary-600/25 transition-all"
+                >
+                  Clear Filters
+                </button>
+              ) : (
               <button
                 onClick={() => setShowCreateModal(true)}
                 className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-xl shadow-md shadow-primary-600/25 transition-all"
@@ -221,7 +280,7 @@ const LeadsPage: React.FC = () => {
                 <Plus className="w-4 h-4" />
                 Add First Lead
               </button>
-            ) : undefined
+              )
           }
         />
       ) : (
@@ -232,6 +291,7 @@ const LeadsPage: React.FC = () => {
             onEdit={openEdit}
             onDelete={openDelete}
             isLoading={isLoading}
+            highlight={filters.search}
           />
           {pagination && (
             <Pagination pagination={pagination} onPageChange={handlePageChange} />

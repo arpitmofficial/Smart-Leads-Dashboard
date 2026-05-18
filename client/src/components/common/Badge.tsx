@@ -14,9 +14,9 @@ const statusStyles: Record<LeadStatus, string> = {
 };
 
 const sourceStyles: Record<LeadSource, string> = {
-  [LeadSource.WEBSITE]: 'bg-purple-100 text-purple-700 dark:bg-purple-500/15 dark:text-purple-400',
-  [LeadSource.INSTAGRAM]: 'bg-pink-100 text-pink-700 dark:bg-pink-500/15 dark:text-pink-400',
-  [LeadSource.REFERRAL]: 'bg-teal-100 text-teal-700 dark:bg-teal-500/15 dark:text-teal-400',
+  [LeadSource.WEBSITE]: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-400',
+  [LeadSource.INSTAGRAM]: 'bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-400',
+  [LeadSource.REFERRAL]: 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-400',
 };
 
 const Badge: React.FC<BadgeProps> = ({ variant, value }) => {

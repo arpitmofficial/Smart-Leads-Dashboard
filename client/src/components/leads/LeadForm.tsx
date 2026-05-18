@@ -79,6 +79,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onSubmit, onCancel, isLoading
         <input
           id="lead-name"
           type="text"
+          autoComplete="off"
           value={name}
           onChange={(e) => { setName(e.target.value); setErrors({ ...errors, name: undefined }); }}
           placeholder="Enter lead name"
@@ -95,6 +96,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onSubmit, onCancel, isLoading
         <input
           id="lead-email"
           type="email"
+          autoComplete="off"
           value={email}
           onChange={(e) => { setEmail(e.target.value); setErrors({ ...errors, email: undefined }); }}
           placeholder="Enter email address"
@@ -110,6 +112,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onSubmit, onCancel, isLoading
         </label>
         <select
           id="lead-status"
+          autoComplete="off"
           value={status}
           onChange={(e) => setStatus(e.target.value as LeadStatus)}
           className={`${inputBase} ${inputNormal} cursor-pointer`}
@@ -127,6 +130,7 @@ const LeadForm: React.FC<LeadFormProps> = ({ lead, onSubmit, onCancel, isLoading
         </label>
         <select
           id="lead-source"
+          autoComplete="off"
           value={source}
           onChange={(e) => { setSource(e.target.value as LeadSource); setErrors({ ...errors, source: undefined }); }}
           className={`${inputBase} ${errors.source ? inputError : inputNormal} cursor-pointer`}

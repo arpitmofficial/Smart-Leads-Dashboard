@@ -15,6 +15,9 @@ const buildFilterQuery = (
 ): FilterQuery<ILeadDocument> => {
   const filter: FilterQuery<ILeadDocument> = {};
 
+  const escapeRegExp = (value: string): string =>
+    value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
   // Role-based filtering: Sales users only see their own leads
   if (userRole === UserRole.SALES) {
     filter.createdBy = userId;
@@ -32,7 +35,8 @@ const buildFilterQuery = (
 
   // Search by name or email (case-insensitive regex)
   if (query.search && query.search.trim()) {
-    const searchRegex = new RegExp(query.search.trim(), 'i');
+    const trimmedSearch = query.search.trim().slice(0, 64);
+    const searchRegex = new RegExp(escapeRegExp(trimmedSearch), 'i');
     filter.$or = [
       { name: searchRegex },
       { email: searchRegex },
@@ -55,7 +59,7 @@ export const getLeads = async (
 
     const query = req.query as unknown as LeadQueryParams;
     const page = Math.max(1, parseInt(query.page || '1', 10));
-    const limit = Math.min(100, Math.max(1, parseInt(query.limit || '10', 10)));
+    const limit = 10;
     const skip = (page - 1) * limit;
 
     // Build filter
