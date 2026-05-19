@@ -31,9 +31,9 @@ const DashboardLayout: React.FC = () => {
 
       {/* Sidebar - hidden on mobile unless menu is open */}
       <div
-        className={`${
+        className={`fixed inset-y-0 left-0 z-40 ${
           mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 transition-transform duration-300 z-40`}
+        } lg:translate-x-0 transition-transform duration-300`}
       >
         <Sidebar />
       </div>
