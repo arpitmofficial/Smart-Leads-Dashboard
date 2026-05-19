@@ -20,20 +20,20 @@
     "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.0",
-    "zod": "^3.23.8"
-  },
-  "devDependencies": {
+    "zod": "^3.23.8",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.25",
     "@types/json2csv": "^5.0.7",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.19.19",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
     "@types/supertest": "^6.0.2",
     "mongodb-memory-server": "^10.2.0",
     "supertest": "^7.1.1",
     "tsx": "^4.19.1",
-    "typescript": "^5.9.3",
     "vitest": "^3.0.5"
   }
 }
