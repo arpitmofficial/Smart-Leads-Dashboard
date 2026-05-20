@@ -50,7 +50,7 @@ const LeadDetail: React.FC<LeadDetailProps> = ({ lead, onClose }) => {
             <DetailRow
               icon={<UserCheck className="w-4 h-4" />}
               label="Created By"
-              value={typeof lead.createdBy === 'object' ? lead.createdBy.name : 'N/A'}
+              value={typeof lead.createdBy === 'object' && lead.createdBy !== null ? lead.createdBy.name : 'N/A'}
             />
             <DetailRow
               icon={<Clock className="w-4 h-4" />}
